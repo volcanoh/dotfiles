@@ -8,7 +8,7 @@ if [[ -d ~/.config/nvim ]]
 then
 if [[ -d ~/.config/nvim.backup ]]
 then
-    rm  ~/.config/nvim.backup
+    rm -rf ~/.config/nvim.backup
 fi
     echo "mv ~/.config/nvim ~/.config/nvim.backup"
     mv ~/.config/nvim ~/.config/nvim.backup
@@ -16,11 +16,7 @@ fi
 
 ln -sf ~/.dotfiles/nvim ~/.config/nvim
 
-if [[ ! -d ~/.local/share/nvim/site/pack/packer/start/packer.nvim ]]
-then
-    echo "git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim"
-    git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
-fi
-nvim +PackerSync
-echo "Please install language server"
+echo "LazyVim setup complete!"
+echo "LazyVim will automatically install plugins on first launch."
+echo "Optional: Install language servers for better development experience:"
 echo "sudo apt install nodejs npm && sudo npm install -g bash-language-server pyright vscode-langservers-extracted typescript typescript-language-server"
