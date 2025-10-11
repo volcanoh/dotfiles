@@ -73,42 +73,73 @@ create_backup() {
     return 0
 }
 
-# Create symlink with backup
+# Create symlink with backup and circular symlink prevention
 safe_symlink() {
     local source="$1"
     local target="$2"
 
     log_debug "Creating symlink: $source -> $target"
 
+    # Resolve absolute paths to prevent confusion
+    local abs_source="$(realpath "$source" 2>/dev/null || echo "$source")"
+    local abs_target
+
+    # For target, only resolve the parent directory to avoid following existing symlinks
+    local target_dir="$(dirname "$target")"
+    local target_name="$(basename "$target")"
+    local abs_target_dir="$(realpath -m "$target_dir" 2>/dev/null || echo "$target_dir")"
+    abs_target="$abs_target_dir/$target_name"
+
+    log_debug "Resolved paths: $abs_source -> $abs_target"
+
     # Check if source exists
-    if [[ ! -e "$source" ]]; then
-        log_error "Source does not exist: $source"
+    if [[ ! -e "$abs_source" ]]; then
+        log_error "Source does not exist: $abs_source"
+        return 1
+    fi
+
+    # Prevent circular symlinks - check if target would be inside source
+    if [[ "$abs_target" == "$abs_source"/* ]]; then
+        log_error "Circular symlink detected: target ($abs_target) is inside source ($abs_source)"
+        return 1
+    fi
+
+    # Prevent self-referencing symlinks
+    if [[ "$abs_source" == "$abs_target" ]]; then
+        log_error "Self-referencing symlink detected: source and target are the same ($abs_source)"
         return 1
     fi
 
     # Create target directory if needed
-    local target_dir="$(dirname "$target")"
+    local target_dir="$(dirname "$abs_target")"
     if [[ ! -d "$target_dir" ]]; then
         log_info "Creating directory: $target_dir"
         mkdir -p "$target_dir"
     fi
 
+    # Check if target already exists and points to our source
+    if [[ -L "$abs_target" ]] && [[ "$(readlink "$abs_target")" == "$abs_source" ]]; then
+        log_info "Symlink already exists and is correct: $abs_target -> $abs_source"
+        return 0
+    fi
+
     # Create backup if target exists and is not already our symlink
-    if [[ -e "$target" ]] && [[ ! -L "$target" || "$(readlink "$target")" != "$source" ]]; then
-        create_backup "$target" || return 1
+    if [[ -e "$abs_target" ]] && [[ ! -L "$abs_target" || "$(readlink "$abs_target")" != "$abs_source" ]]; then
+        create_backup "$abs_target" || return 1
     fi
 
     # Remove existing symlink if it points to wrong location
-    if [[ -L "$target" ]] && [[ "$(readlink "$target")" != "$source" ]]; then
-        rm "$target"
+    if [[ -L "$abs_target" ]] && [[ "$(readlink "$abs_target")" != "$abs_source" ]]; then
+        log_info "Removing incorrect symlink: $abs_target"
+        rm "$abs_target"
     fi
 
-    # Create symlink
-    if ln -sf "$source" "$target"; then
-        log_success "Symlink created: $target -> $source"
+    # Create symlink using absolute source path to avoid confusion
+    if ln -sf "$abs_source" "$abs_target"; then
+        log_success "Symlink created: $abs_target -> $abs_source"
         return 0
     else
-        log_error "Failed to create symlink: $target -> $source"
+        log_error "Failed to create symlink: $abs_target -> $abs_source"
         return 1
     fi
 }

@@ -12,6 +12,92 @@ source "${SCRIPT_DIR}/utils.sh"
 # Initialize script environment
 init_script
 
+# Install Neovim AppImage on Linux
+install_neovim_appimage() {
+    log_info "Installing Neovim AppImage..."
+
+    # Check if we're on Linux
+    if [[ "$(uname)" != "Linux" ]]; then
+        log_warning "AppImage installation is only for Linux. Skipping..."
+        return 0
+    fi
+
+    # Check if nvim is already installed and working
+    if command_exists nvim; then
+        local nvim_version=$(nvim --version | head -n1 | cut -d' ' -f2)
+        log_info "Neovim is already installed: $nvim_version"
+        read -p "Reinstall Neovim AppImage? (y/n): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            log_info "Keeping existing Neovim installation"
+            return 0
+        fi
+    fi
+
+    local appimage_url="https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage"
+    local install_dir="/usr/local/bin"
+    local appimage_path="$install_dir/nvim.appimage"
+    local nvim_symlink="$install_dir/nvim"
+
+    # Create temporary directory for download
+    local temp_dir=$(mktemp -d)
+    local temp_appimage="$temp_dir/nvim-linux-x86_64.appimage"
+
+    # Download AppImage
+    log_info "Downloading Neovim AppImage from GitHub releases..."
+    if ! curl -L -o "$temp_appimage" "$appimage_url"; then
+        log_error "Failed to download Neovim AppImage"
+        rm -rf "$temp_dir"
+        return 1
+    fi
+
+    # Make AppImage executable
+    chmod +x "$temp_appimage"
+
+    # Test the AppImage works
+    log_info "Testing AppImage..."
+    if ! "$temp_appimage" --version >/dev/null 2>&1; then
+        log_error "Downloaded AppImage is not working"
+        rm -rf "$temp_dir"
+        return 1
+    fi
+
+    # Install to system location (requires sudo)
+    log_info "Installing AppImage to $install_dir (may require sudo)..."
+
+    # Remove existing installations
+    if [[ -f "$appimage_path" ]]; then
+        sudo rm -f "$appimage_path"
+    fi
+    if [[ -L "$nvim_symlink" ]]; then
+        sudo rm -f "$nvim_symlink"
+    fi
+
+    # Move AppImage to final location
+    if ! sudo mv "$temp_appimage" "$appimage_path"; then
+        log_error "Failed to install AppImage to $install_dir"
+        rm -rf "$temp_dir"
+        return 1
+    fi
+
+    # Create symlink for easy access
+    if ! sudo ln -s "$appimage_path" "$nvim_symlink"; then
+        log_error "Failed to create nvim symlink"
+        rm -rf "$temp_dir"
+        return 1
+    fi
+
+    # Cleanup
+    rm -rf "$temp_dir"
+
+    # Verify installation
+    local installed_version=$(nvim --version | head -n1 | cut -d' ' -f2)
+    log_success "Neovim AppImage installed successfully: $installed_version"
+    log_info "Neovim is available at: $nvim_symlink"
+
+    return 0
+}
+
 # Neovim configuration setup
 setup_neovim() {
     log_info "Setting up Neovim configuration..."
@@ -121,6 +207,90 @@ install_language_servers() {
     fi
 }
 
+# Install ripgrep
+install_ripgrep() {
+    log_info "Installing ripgrep..."
+
+    # Check if ripgrep is already installed
+    if command_exists rg; then
+        local rg_version=$(rg --version | head -n1 | cut -d' ' -f2)
+        log_info "ripgrep is already installed: $rg_version"
+        return 0
+    fi
+
+    # Install based on platform
+    case "$(uname)" in
+        "Linux")
+            # Try to detect package manager and install
+            if command_exists apt-get; then
+                log_info "Installing ripgrep via apt..."
+                if sudo apt-get update && sudo apt-get install -y ripgrep; then
+                    log_success "ripgrep installed via apt"
+                    return 0
+                else
+                    log_warning "apt installation failed, trying alternative method..."
+                fi
+            elif command_exists yum; then
+                log_info "Installing ripgrep via yum..."
+                if sudo yum install -y ripgrep; then
+                    log_success "ripgrep installed via yum"
+                    return 0
+                else
+                    log_warning "yum installation failed, trying alternative method..."
+                fi
+            elif command_exists dnf; then
+                log_info "Installing ripgrep via dnf..."
+                if sudo dnf install -y ripgrep; then
+                    log_success "ripgrep installed via dnf"
+                    return 0
+                else
+                    log_warning "dnf installation failed, trying alternative method..."
+                fi
+            fi
+
+            # Fallback: Download binary release for Linux
+            log_info "Installing ripgrep from GitHub releases..."
+            local temp_dir=$(mktemp -d)
+            local rg_version="14.1.0"
+            local rg_url="https://github.com/BurntSushi/ripgrep/releases/download/${rg_version}/ripgrep-${rg_version}-x86_64-unknown-linux-musl.tar.gz"
+
+            if curl -L -o "$temp_dir/ripgrep.tar.gz" "$rg_url"; then
+                cd "$temp_dir"
+                tar xzf ripgrep.tar.gz
+                sudo cp "ripgrep-${rg_version}-x86_64-unknown-linux-musl/rg" /usr/local/bin/
+                sudo chmod +x /usr/local/bin/rg
+                rm -rf "$temp_dir"
+                log_success "ripgrep installed from GitHub releases"
+                return 0
+            else
+                log_error "Failed to download ripgrep"
+                rm -rf "$temp_dir"
+                return 1
+            fi
+            ;;
+        "Darwin")
+            if command_exists brew; then
+                log_info "Installing ripgrep via Homebrew..."
+                if brew install ripgrep; then
+                    log_success "ripgrep installed via Homebrew"
+                    return 0
+                else
+                    log_error "Homebrew installation failed"
+                    return 1
+                fi
+            else
+                log_error "Homebrew not found. Please install Homebrew first or install ripgrep manually"
+                return 1
+            fi
+            ;;
+        *)
+            log_error "Unsupported platform for automatic ripgrep installation"
+            log_info "Please install ripgrep manually from: https://github.com/BurntSushi/ripgrep"
+            return 1
+            ;;
+    esac
+}
+
 # Check Neovim configuration
 check_neovim() {
     log_info "Checking Neovim installation..."
@@ -136,7 +306,7 @@ check_neovim() {
     log_info "Neovim version: $nvim_version"
 
     # Check minimum version (0.8.0+)
-    if ! nvim --version | head -n1 | grep -E "v0\.[8-9]\.|v[1-9]\." >/dev/null; then
+    if ! nvim --version | head -n1 | grep -E "v0\.([8-9]|[1-9][0-9]+)\.|v[1-9]\." >/dev/null; then
         log_warning "Neovim version may be too old. Consider upgrading to 0.8.0+"
     fi
 
@@ -155,6 +325,16 @@ check_neovim() {
 main() {
     log_info "Starting Neovim setup..."
 
+    # Install Neovim AppImage on Linux
+    install_neovim_appimage || {
+        log_warning "Neovim AppImage installation failed, continuing with configuration setup..."
+    }
+
+    # Install ripgrep (required for telescope and other plugins)
+    install_ripgrep || {
+        log_warning "ripgrep installation failed, some Neovim plugins may not work optimally"
+    }
+
     # Check dependencies
     check_dependencies nvim git || exit 1
 
@@ -169,17 +349,8 @@ main() {
         exit 1
     }
 
-    # Check language servers
-    if ! check_language_servers; then
-        read -p "Install missing language servers? (y/n): " -n 1 -r
-        echo
-
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            install_language_servers || {
-                log_warning "Language server installation failed"
-            }
-        fi
-    fi
+    # Language servers are not automatically installed
+    # Users can install them manually if needed
 
     # Final verification
     if check_neovim; then

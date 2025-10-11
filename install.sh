@@ -303,8 +303,10 @@ main() {
     # Check system
     check_system
 
-    # Interactive selection if needed
-    if [[ "$INSTALL_ALL" == "false" ]]; then
+    # Interactive selection if needed (only if no specific components selected)
+    if [[ "$INSTALL_ALL" == "false" && "$INSTALL_GIT" == "false" && \
+          "$INSTALL_NVIM" == "false" && "$INSTALL_ZSH" == "false" && \
+          "$INSTALL_TMUX" == "false" ]]; then
         interactive_selection
     fi
 
