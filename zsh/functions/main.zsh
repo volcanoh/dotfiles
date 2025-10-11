@@ -61,8 +61,8 @@ fd() {
     find . -type d -iname "*$1*"
 }
 
-# Search file contents
-search() {
+# Search file contents using grep
+searchfiles() {
     grep -r "$1" .
 }
 
