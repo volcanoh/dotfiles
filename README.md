@@ -50,17 +50,17 @@ This dotfiles repository includes a **comprehensive private configuration system
    cd ~/.dotfiles
    ```
 
-2. **Run individual setup scripts (recommended):**
+2. **Run the installation script:**
    ```bash
-   ./git/setup.sh       # Git with private config support
-   ./zsh/setup.sh       # Zsh with private config support
-   ./nvim/setup.sh      # Neovim setup
-   ./tmux/setup.sh      # Tmux setup
+   ./install.sh                 # Complete automated setup with private config handling
    ```
 
-   Or use the unified installer:
+   Or set up individual components using centralized scripts:
    ```bash
-   ./install.sh
+   ./scripts/setup-git.sh       # Git with private config support
+   ./scripts/setup-zsh.sh       # Zsh with private config support
+   ./scripts/setup-nvim.sh      # Neovim setup
+   ./scripts/setup-tmux.sh      # Tmux setup
    ```
 
 3. **Configure private information:**
@@ -70,23 +70,20 @@ This dotfiles repository includes a **comprehensive private configuration system
    nano ~/.config/private/dotfiles.conf
    ```
 
-4. **Re-run setup scripts** to apply your private configuration:
+4. **Private configuration is applied automatically** during setup, but you can re-run if needed:
    ```bash
-   ./git/setup.sh && ./zsh/setup.sh
+   ./scripts/setup-git.sh && ./scripts/setup-zsh.sh
    ```
 
 ## 📁 Repository Structure
 
 ```
 .dotfiles/
-├── git/                         # Git configuration with private config support
-│   ├── gitconfig.template      # Git config template (tracked)
-│   ├── gitconfig              # Generated config (ignored)
-│   ├── gitalias.txt           # 300+ comprehensive git aliases
-│   └── setup.sh               # Enhanced setup with private config
-├── zsh/                         # Zsh configuration with private config support
-│   ├── zshrc.template         # Zsh config template (tracked)
-│   ├── zshrc                  # Generated config (ignored)
+├── git/                         # Git configuration
+│   ├── gitconfig               # Git configuration file
+│   └── gitalias.txt           # 300+ comprehensive git aliases
+├── zsh/                         # Zsh configuration
+│   ├── zshrc                   # Main zsh configuration
 │   ├── p10k.zsh               # Powerlevel10k theme configuration
 │   ├── aliases/               # Shell aliases (modular)
 │   │   ├── main.zsh          # Core aliases
@@ -95,8 +92,7 @@ This dotfiles repository includes a **comprehensive private configuration system
 │   │   └── fzf.zsh           # FZF integration aliases
 │   ├── functions/             # Shell functions
 │   ├── exports/               # Environment variables
-│   ├── config/                # Additional configurations
-│   └── setup.sh               # Enhanced setup with private config
+│   └── config/                # Additional configurations
 ├── nvim/                        # Neovim configuration
 │   ├── init.lua               # Main configuration file
 │   ├── lua/
@@ -109,13 +105,9 @@ This dotfiles repository includes a **comprehensive private configuration system
 │   │       ├── render-markdown.lua # Rich markdown rendering
 │   │       ├── csvview.lua       # CSV file viewing
 │   │       └── example.lua       # LazyVim example configs
-│   └── setup.sh               # Neovim setup script
 ├── tmux/                        # Tmux configuration
 │   ├── tmux.conf              # Main tmux configuration
-│   ├── tmux.conf.local        # Local tmux overrides
-│   └── setup.sh               # Tmux setup script
-├── config/                      # Private configuration system
-│   └── private.conf.template  # Template for private data
+│   └── tmux.conf.local        # Local tmux overrides
 ├── scripts/                     # Installation and utility scripts
 │   ├── utils.sh               # Common utility functions
 │   ├── setup-git.sh           # Git setup script
@@ -127,7 +119,6 @@ This dotfiles repository includes a **comprehensive private configuration system
 ├── install.sh                   # Unified installation script
 ├── README.md                    # This file
 ├── CLAUDE.md                    # Claude Code guidance
-├── PRIVATE_CONFIG.md            # Private configuration guide
 └── .gitignore                   # Excludes private configs and generated files
 ```
 
@@ -216,8 +207,8 @@ See `PRIVATE_CONFIG.md` for detailed documentation.
 cd ~/.dotfiles
 git pull origin main
 
-# Regenerate configs with latest templates
-./git/setup.sh && ./zsh/setup.sh
+# Regenerate configs with latest changes
+./scripts/setup-git.sh && ./scripts/setup-zsh.sh
 
 # Update plugins
 nvim +Lazy sync +qa
@@ -276,19 +267,19 @@ git status --ignored
 1. **Private config not found:**
    ```bash
    # Run any setup script to create template
-   ./git/setup.sh
+   ./scripts/setup-git.sh
    # Edit the created config
    nano ~/.config/private/dotfiles.conf
-   # Run setup again
-   ./git/setup.sh
+   # Run setup again if needed
+   ./scripts/setup-git.sh
    ```
 
 2. **Zsh not loading properly:**
    ```bash
    # Check zsh installation
    which zsh
-   # Regenerate config from template
-   ./zsh/setup.sh
+   # Regenerate config
+   ./scripts/setup-zsh.sh
    # Reload configuration
    source ~/.zshrc
    ```
@@ -304,7 +295,7 @@ git status --ignored
 4. **Git aliases not working:**
    ```bash
    # Regenerate git config
-   ./git/setup.sh
+   ./scripts/setup-git.sh
    # Check git configuration
    git config --list | grep alias
    ```
@@ -321,7 +312,7 @@ git status --ignored
 
 1. Check `PRIVATE_CONFIG.md` for private configuration issues
 2. Check `CLAUDE.md` for Claude Code integration guidance
-3. Run setup scripts with debug mode: `DEBUG=1 ./git/setup.sh`
+3. Run setup scripts with debug mode: `DEBUG=1 ./scripts/setup-git.sh`
 4. Open an issue on the repository with details about your system and the problem
 
 ## 🔐 Security Best Practices

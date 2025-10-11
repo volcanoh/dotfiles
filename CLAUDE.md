@@ -13,27 +13,36 @@ This is a personal dotfiles repository for configuring development environments 
 
 ## Setup and Installation
 
-Each tool has its own setup script that creates symlinks to the appropriate locations:
+Setup is handled through centralized scripts in the `scripts/` directory:
 
 ```bash
+# Complete installation
+./install.sh                    # Full automated setup
+
 # Setup individual tools
-./git/setup.sh      # Links git config and aliases
-./nvim/setup.sh     # Links Neovim config and installs Packer
-./tmux/setup.sh     # Links tmux configuration files
-./zsh/setup.sh      # Installs Oh My Zsh and links zsh config
+./scripts/setup-git.sh          # Git config and private config creation
+./scripts/setup-nvim.sh         # Neovim config and lazy.nvim setup
+./scripts/setup-tmux.sh         # Tmux configuration and TPM
+./scripts/setup-zsh.sh          # Zsh, Oh My Zsh, and private config
 ```
 
 ### Setup Scripts Behavior
-- **git/setup.sh**: Creates symlinks for `.gitconfig` and `.gitalias.txt`
-- **nvim/setup.sh**:
+- **scripts/setup-git.sh**:
+  - Creates symlinks for `.gitconfig` and `.gitalias.txt`
+  - Auto-creates `~/.config/private/git.conf` with template
+  - Provides user guidance for customization
+- **scripts/setup-nvim.sh**:
   - Creates `~/.config` directory if needed
   - Backs up existing nvim config to `nvim.backup`
-  - Installs Packer plugin manager
-  - Runs `nvim +PackerSync` to install plugins
-- **tmux/setup.sh**: Links tmux configuration files
-- **zsh/setup.sh**:
+  - Installs lazy.nvim plugin manager
+  - Runs `nvim +Lazy sync` to install plugins
+- **scripts/setup-tmux.sh**:
+  - Links tmux configuration files
+  - Installs TPM (Tmux Plugin Manager)
+- **scripts/setup-zsh.sh**:
   - Installs Oh My Zsh framework
   - Downloads Antigen plugin manager
+  - Auto-creates `~/.config/private/dotfiles.conf` with template
   - Links zsh configuration files
 
 ## Neovim Architecture
