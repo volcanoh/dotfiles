@@ -150,12 +150,28 @@ is_linux() {
     [[ "$(get_os)" == "linux" ]]
 }
 
-# Install package based on OS
-install_package() {
-    local package="$1"
+# Map command names to package names for different OS
+get_package_name() {
+    local command="$1"
     local os="$(get_os)"
 
-    log_info "Installing package: $package"
+    case "$command" in
+        nvim)
+            echo "neovim"
+            ;;
+        *)
+            echo "$command"
+            ;;
+    esac
+}
+
+# Install package based on OS
+install_package() {
+    local command="$1"
+    local package="$(get_package_name "$command")"
+    local os="$(get_os)"
+
+    log_info "Installing package: $package (for command: $command)"
 
     case "$os" in
         macos)
