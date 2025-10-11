@@ -31,6 +31,11 @@ setup_git() {
         return 1
     fi
 
+    # Create private git configuration
+    create_private_git_config || {
+        log_warning "Failed to create private git config, continuing..."
+    }
+
     # Create symlinks
     safe_symlink "$gitconfig_source" "$HOME/.gitconfig" || return 1
     safe_symlink "$gitalias_source" "$HOME/.gitalias.txt" || return 1
@@ -90,6 +95,12 @@ main() {
         log_error "Git setup failed"
         exit 1
     }
+
+    # Check private config customization
+    local private_git_config="$HOME/.config/private/git.conf"
+    if ! check_private_config_customization "$private_git_config" "Git"; then
+        print_private_config_guidance "Git" "$private_git_config"
+    fi
 
     # Final verification
     if check_git_config; then

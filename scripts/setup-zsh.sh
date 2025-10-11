@@ -78,6 +78,11 @@ setup_zsh() {
     # Install Antigen
     install_antigen || return 1
 
+    # Create private dotfiles configuration
+    create_private_dotfiles_config || {
+        log_warning "Failed to create private dotfiles config, continuing..."
+    }
+
     # Create symlinks
     safe_symlink "$zshrc_source" "$HOME/.zshrc" || return 1
     safe_symlink "$p10k_source" "$HOME/.p10k.zsh" || return 1
@@ -194,6 +199,12 @@ main() {
                 log_warning "Failed to set Zsh as default shell"
             }
         fi
+    fi
+
+    # Check private config customization
+    local private_config="$HOME/.config/private/dotfiles.conf"
+    if ! check_private_config_customization "$private_config" "Zsh/Dotfiles"; then
+        print_private_config_guidance "Zsh/Dotfiles" "$private_config"
     fi
 
     # Final verification
