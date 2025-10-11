@@ -254,21 +254,40 @@ print_next_steps() {
     echo
     echo -e "${YELLOW}Next steps:${NC}"
 
+    # Private configuration reminder
+    echo -e "${BLUE}🔒 Configure Private Settings:${NC}"
+    if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_ZSH" == "true" ]] || [[ "$INSTALL_GIT" == "true" ]]; then
+        echo "1. Edit private config: vim ~/.config/private/dotfiles.conf"
+        echo "   - Set your GIT_USER_NAME and GIT_USER_EMAIL"
+        echo "   - Add API keys and tokens as needed"
+        echo "2. Edit git config: vim ~/.config/private/git.conf"
+        echo "   - Update user name and email"
+        echo ""
+    fi
+
     if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_ZSH" == "true" ]]; then
-        echo "1. Restart your terminal or run: exec zsh"
-        echo "2. Complete Powerlevel10k configuration: p10k configure"
+        echo -e "${BLUE}🐚 Zsh Setup:${NC}"
+        echo "3. Restart your terminal or run: exec zsh"
+        echo "4. Complete Powerlevel10k configuration: p10k configure"
+        echo ""
     fi
 
     if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_NVIM" == "true" ]]; then
-        echo "3. Open Neovim and let plugins install: nvim"
-        echo "4. Install language servers: :Mason"
+        echo -e "${BLUE}⚡ Neovim Setup:${NC}"
+        echo "5. Open Neovim and let plugins install: nvim"
+        echo "6. Install language servers: :Mason"
+        echo ""
     fi
 
     if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_TMUX" == "true" ]]; then
-        echo "5. Install Tmux plugins: <prefix> + I (in tmux)"
+        echo -e "${BLUE}🖥️  Tmux Setup:${NC}"
+        echo "7. Install Tmux plugins: <prefix> + I (in tmux)"
+        echo ""
     fi
 
-    echo "6. Customize configurations in ~/.dotfiles/"
+    echo -e "${BLUE}🎯 Final Steps:${NC}"
+    echo "8. Customize configurations in ~/.dotfiles/"
+    echo "9. Backup your private configs (they're not tracked by git)"
     echo
     echo -e "${CYAN}Enjoy your new development environment! 🚀${NC}"
 }
