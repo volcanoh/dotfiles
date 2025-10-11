@@ -1,11 +1,14 @@
-[user]
-	name = huangcan-nreal
-	email = canhuang@xreal.com
-
 [include]
   path = ~/.gitalias.txt
 
-# Note: This file now contains actual values instead of template placeholders
-# To change user info, edit this file directly or use:
-# git config user.name "Your Name"
-# git config user.email "your.email@example.com"
+# Load private git configuration from private config
+# User name and email are now set in ~/.config/private/dotfiles.conf
+# Git will automatically pick up these environment variables:
+# GIT_USER_NAME and GIT_USER_EMAIL
+
+# To override, you can also create ~/.config/private/git.conf with:
+# [user]
+#   name = Your Name
+#   email = your.email@example.com
+[includeIf "gitdir:~/"]
+  path = ~/.config/private/git.conf

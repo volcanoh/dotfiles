@@ -12,6 +12,10 @@ lazyvim.json
 config/private.conf.template.local
 *.local
 
+# Private configurations (outside this repo)
+# ~/.config/private/dotfiles.conf - sourced by zshrc
+# ~/.config/private/git.conf - included by git
+
 # System files
 .DS_Store?
 ._*
