@@ -21,30 +21,7 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias -- -='cd -'
 
-# Git aliases (complement the git aliases in gitconfig)
-alias gs='git status'
-alias gd='git diff'
-alias ga='git add'
-alias gc='git commit'
-alias gp='git push'
-alias gl='git pull'
-alias gco='git checkout'
-alias gb='git branch'
-alias gf='git fetch'
-alias gr='git remote'
-alias gm='git merge'
-alias gt='git tag'
-alias gst='git stash'
-
-# Git shortcuts for common workflows
-alias gaa='git add .'
-alias gcm='git commit -m'
-alias gcam='git commit -am'
-alias gps='git push'
-alias gpl='git pull'
-alias gst='git status'
-alias glg='git log --oneline --graph --decorate'
-alias gll='git log --oneline'
+# Git aliases moved to zsh/aliases/git.zsh
 
 # Editor aliases
 if command -v nvim >/dev/null 2>&1; then

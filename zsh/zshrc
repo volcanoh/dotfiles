@@ -18,6 +18,18 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 # Dotfiles directory
 export DOTFILES_DIR="$HOME/.dotfiles"
 
+# Load private configuration early (before other exports)
+PRIVATE_CONFIG="$HOME/.config/private/dotfiles.conf"
+if [[ -f "$PRIVATE_CONFIG" ]]; then
+    source "$PRIVATE_CONFIG"
+else
+    # Warn user if private config is missing
+    if [[ "${TERM:-}" != "dumb" && -z "${DOTFILES_SETUP_RUNNING:-}" ]]; then
+        echo "⚠️  Private configuration not found at $PRIVATE_CONFIG"
+        echo "💡 Run ./zsh/setup.sh to create it"
+    fi
+fi
+
 # Load environment variables and exports first
 [[ -f "$DOTFILES_DIR/zsh/exports/main.zsh" ]] && source "$DOTFILES_DIR/zsh/exports/main.zsh"
 
@@ -178,3 +190,6 @@ fi
 
 # Clean up environment
 unset config_file alias_file func_file
+
+# Private configuration is loaded at startup (lines 22-31)
+# Add new variables to ~/.config/private/dotfiles.conf with export statements

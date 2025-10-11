@@ -6,3 +6,22 @@
 *backup*
 .neoconf.json
 lazyvim.json
+
+# Generated configuration files are now tracked (no more templates)
+# Only actual private data is ignored
+config/private.conf.template.local
+*.local
+
+# System files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor temp files
+*.swp
+*.swo
+*~
+.viminfo

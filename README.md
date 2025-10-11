@@ -1,19 +1,37 @@
 # Dotfiles
 
-> A modern, modular dotfiles configuration for efficient development environments
+> A modern, secure, and modular dotfiles configuration for efficient development environments
 
-This repository contains my personal dotfiles configuration for **Neovim**, **Zsh**, **Tmux**, **Git**, and **Spacemacs**. The configuration is designed to be modular, well-documented, and easy to maintain.
+This repository contains a comprehensive dotfiles configuration for **Neovim**, **Zsh**, **Tmux**, **Git**, and **Spacemacs**. The configuration is designed to be modular, well-documented, **privacy-focused**, and easy to maintain with **automated private configuration management**.
 
 ## ✨ Features
 
-- **🚀 Modern Neovim** with lazy.nvim plugin manager and LSP support
-- **🔧 Zsh** with Oh My Zsh, Antigen, and Powerlevel10k theme
+- **🚀 Modern Neovim** with lazy.nvim plugin manager and comprehensive LSP support
+- **🔧 Enhanced Zsh** with Oh My Zsh, Antigen, and Powerlevel10k theme
 - **📱 Tmux** configuration for productive terminal multiplexing
-- **📝 Git** with comprehensive aliases and workflow enhancements
+- **📝 Powerful Git** with 300+ aliases and advanced workflow enhancements
 - **🎨 Spacemacs** configuration for Emacs users
+- **🔒 Private Configuration System** - Keep sensitive data secure and shareable
 - **⚡ Fast setup** with automated installation scripts
 - **🔄 Modular design** for easy customization and maintenance
 - **🛡️ Safe installation** with automatic backups and error handling
+- **📋 Rich Markdown Support** with live rendering and syntax highlighting
+
+## 🔒 Security & Privacy
+
+This dotfiles repository includes a **comprehensive private configuration system** that keeps your sensitive information (API keys, user details, tokens) separate from version control:
+
+- **🔐 Secure by Default:** Private data never enters git history
+- **📄 Template System:** Config files use placeholders for sensitive data
+- **🎯 Automated Setup:** Scripts handle private data injection automatically
+- **📤 Shareable:** Repository can be safely shared publicly
+
+### Private Information Protected:
+- Git user name and email
+- API tokens and keys (MODEL_PROXY_TOKEN, etc.)
+- SSH configurations
+- Work/personal email addresses
+- Custom environment variables
 
 ## 🚀 Quick Start
 
@@ -32,74 +50,85 @@ This repository contains my personal dotfiles configuration for **Neovim**, **Zs
    cd ~/.dotfiles
    ```
 
-2. **Run the unified installer:**
+2. **Run individual setup scripts (recommended):**
+   ```bash
+   ./git/setup.sh       # Git with private config support
+   ./zsh/setup.sh       # Zsh with private config support
+   ./nvim/setup.sh      # Neovim setup
+   ./tmux/setup.sh      # Tmux setup
+   ```
+
+   Or use the unified installer:
    ```bash
    ./install.sh
    ```
 
-   Or install individual components:
+3. **Configure private information:**
+
+   The setup scripts will create `~/.config/private/dotfiles.conf`. Edit it with your personal information:
    ```bash
-   ./scripts/setup-git.sh      # Git configuration
-   ./scripts/setup-nvim.sh     # Neovim setup
-   ./scripts/setup-zsh.sh      # Zsh configuration
-   ./scripts/setup-tmux.sh     # Tmux setup
+   nano ~/.config/private/dotfiles.conf
+   ```
+
+4. **Re-run setup scripts** to apply your private configuration:
+   ```bash
+   ./git/setup.sh && ./zsh/setup.sh
    ```
 
 ## 📁 Repository Structure
 
 ```
 .dotfiles/
-├── git/                    # Git configuration
-│   ├── gitconfig          # Main git configuration
-│   ├── gitalias.txt       # Comprehensive git aliases
-│   └── setup.sh           # Git setup script
-├── nvim/                   # Neovim configuration
-│   ├── init.lua           # Main configuration file
+├── git/                         # Git configuration with private config support
+│   ├── gitconfig.template      # Git config template (tracked)
+│   ├── gitconfig              # Generated config (ignored)
+│   ├── gitalias.txt           # 300+ comprehensive git aliases
+│   └── setup.sh               # Enhanced setup with private config
+├── zsh/                         # Zsh configuration with private config support
+│   ├── zshrc.template         # Zsh config template (tracked)
+│   ├── zshrc                  # Generated config (ignored)
+│   ├── p10k.zsh               # Powerlevel10k theme configuration
+│   ├── aliases/               # Shell aliases (modular)
+│   │   ├── main.zsh          # Core aliases
+│   │   ├── git.zsh           # Git shell aliases
+│   │   ├── cc.zsh            # Claude Code aliases
+│   │   └── fzf.zsh           # FZF integration aliases
+│   ├── functions/             # Shell functions
+│   ├── exports/               # Environment variables
+│   ├── config/                # Additional configurations
+│   └── setup.sh               # Enhanced setup with private config
+├── nvim/                        # Neovim configuration
+│   ├── init.lua               # Main configuration file
 │   ├── lua/
-│   │   ├── core/          # Core Neovim settings
-│   │   │   ├── options.lua
-│   │   │   ├── keymaps.lua
-│   │   │   ├── autocmds.lua
-│   │   │   ├── colors.lua
-│   │   │   └── statusline.lua
-│   │   └── plugins/       # Plugin configurations (organized by category)
-│   │       ├── ui/        # UI and interface plugins
-│   │       ├── editor/    # Editor enhancement plugins
-│   │       ├── coding/    # Coding and development plugins
-│   │       ├── git/       # Git integration plugins
-│   │       └── ai/        # AI and productivity plugins
-│   └── setup.sh           # Neovim setup script
-├── zsh/                    # Zsh configuration
-│   ├── zshrc              # Main zsh configuration
-│   ├── p10k.zsh           # Powerlevel10k theme configuration
-│   ├── aliases/           # Shell aliases
-│   │   └── main.zsh
-│   ├── functions/         # Shell functions
-│   │   └── main.zsh
-│   ├── exports/           # Environment variables
-│   │   └── main.zsh
-│   ├── config/            # Additional configurations
-│   │   └── main.zsh
-│   └── setup.sh           # Zsh setup script
-├── tmux/                   # Tmux configuration
-│   ├── tmux.conf          # Main tmux configuration
-│   ├── tmux.conf.local    # Local tmux overrides
-│   └── setup.sh           # Tmux setup script
-├── spacemacs/              # Spacemacs configuration
-│   └── init.el            # Spacemacs configuration
-├── scripts/                # Installation and utility scripts
-│   ├── utils.sh           # Common utility functions
-│   ├── setup-git.sh       # Git setup script
-│   ├── setup-nvim.sh      # Neovim setup script
-│   ├── setup-zsh.sh       # Zsh setup script
-│   └── setup-tmux.sh      # Tmux setup script
-├── config/                 # Configuration files and backups
-│   └── backup/            # Automatic backups directory
-├── docs/                   # Documentation
-├── tools/                  # Additional tools and utilities
-├── install.sh              # Unified installation script
-├── README.md              # This file
-└── CLAUDE.md              # Claude Code guidance
+│   │   ├── config/            # LazyVim configuration
+│   │   │   ├── keymaps.lua   # Custom keybindings
+│   │   │   └── lazy.lua      # Lazy.nvim setup
+│   │   └── plugins/           # Plugin configurations
+│   │       ├── claudecode.lua    # Claude Code integration
+│   │       ├── marksman.lua      # Markdown LSP
+│   │       ├── render-markdown.lua # Rich markdown rendering
+│   │       ├── csvview.lua       # CSV file viewing
+│   │       └── example.lua       # LazyVim example configs
+│   └── setup.sh               # Neovim setup script
+├── tmux/                        # Tmux configuration
+│   ├── tmux.conf              # Main tmux configuration
+│   ├── tmux.conf.local        # Local tmux overrides
+│   └── setup.sh               # Tmux setup script
+├── config/                      # Private configuration system
+│   └── private.conf.template  # Template for private data
+├── scripts/                     # Installation and utility scripts
+│   ├── utils.sh               # Common utility functions
+│   ├── setup-git.sh           # Git setup script
+│   ├── setup-nvim.sh          # Neovim setup script
+│   ├── setup-zsh.sh           # Zsh setup script
+│   └── setup-tmux.sh          # Tmux setup script
+├── spacemacs/                   # Spacemacs configuration
+│   └── init.el                # Spacemacs configuration
+├── install.sh                   # Unified installation script
+├── README.md                    # This file
+├── CLAUDE.md                    # Claude Code guidance
+├── PRIVATE_CONFIG.md            # Private configuration guide
+└── .gitignore                   # Excludes private configs and generated files
 ```
 
 ## 🔧 Configuration Details
@@ -107,16 +136,20 @@ This repository contains my personal dotfiles configuration for **Neovim**, **Zs
 ### Neovim
 - **Plugin Manager:** lazy.nvim for fast startup and lazy loading
 - **LSP:** Full LSP support with mason.nvim for easy language server management
+- **Markdown:** Enhanced with marksman LSP and live rendering via render-markdown.nvim
 - **Completion:** nvim-cmp with multiple sources
 - **Git Integration:** Comprehensive git workflow with gitsigns, neogit, diffview
-- **AI Integration:** ChatGPT and Codeium support
+- **AI Integration:** Claude Code integration for AI-powered development
 - **File Management:** nvim-tree, telescope for fuzzy finding
+- **CSV Support:** csvview.nvim for viewing CSV files
 
 ### Zsh
 - **Framework:** Oh My Zsh with Antigen for plugin management
 - **Theme:** Powerlevel10k for a beautiful and informative prompt
 - **Plugins:** Auto-suggestions, syntax highlighting, and more
 - **Modular Design:** Separate files for aliases, functions, exports, and config
+- **Private Config:** Template-based system for API tokens and sensitive data
+- **Rich Aliases:** 60+ git shell aliases + comprehensive system shortcuts
 
 ### Tmux
 - **Theme:** Customized theme with battery, date, and system information
@@ -125,9 +158,38 @@ This repository contains my personal dotfiles configuration for **Neovim**, **Zs
 - **Mouse Support:** Enabled for easy interaction
 
 ### Git
-- **Aliases:** 100+ git aliases from gitalias.com
-- **Workflow:** Topic branch workflows, maintenance commands
+- **Comprehensive Aliases:** 300+ git aliases from gitalias.com
+- **Dual System:** Git aliases (`git aa`) + shell aliases (`gaa`)
+- **Workflow:** Topic branch workflows, maintenance commands, analytics
+- **Private Config:** Template-based user configuration
 - **Integration:** Seamless integration with Neovim and shell
+
+## 🔒 Private Configuration System
+
+### How It Works
+
+1. **Templates** contain placeholders like `{{GIT_USER_NAME}}`
+2. **Private config** at `~/.config/private/dotfiles.conf` contains your actual data
+3. **Setup scripts** combine templates + private data → final configs
+4. **Generated configs** are automatically ignored by git
+
+### Supported Private Data
+
+```bash
+# Example ~/.config/private/dotfiles.conf
+GIT_USER_NAME="Your Name"
+GIT_USER_EMAIL="your.email@example.com"
+MODEL_PROXY_TOKEN="your-api-token"
+```
+
+### Adding New Private Configs
+
+1. Add variable to `config/private.conf.template`
+2. Use `{{VARIABLE_NAME}}` in config templates
+3. Update setup scripts to process the variable
+4. Add generated config to `.gitignore`
+
+See `PRIVATE_CONFIG.md` for detailed documentation.
 
 ## 🎨 Customization
 
@@ -153,6 +215,9 @@ This repository contains my personal dotfiles configuration for **Neovim**, **Zs
 ```bash
 cd ~/.dotfiles
 git pull origin main
+
+# Regenerate configs with latest templates
+./git/setup.sh && ./zsh/setup.sh
 
 # Update plugins
 nvim +Lazy sync +qa
@@ -180,8 +245,11 @@ nvim +checkhealth +qa
 # Git configuration check
 git config --list
 
-# Zsh plugin status
-antibody list  # or antigen list
+# Check private config status
+ls -la ~/.config/private/dotfiles.conf
+
+# Verify generated configs are ignored
+git status --ignored
 ```
 
 ## 📋 Requirements
@@ -205,15 +273,27 @@ antibody list  # or antigen list
 
 ### Common Issues
 
-1. **Zsh not loading properly:**
+1. **Private config not found:**
+   ```bash
+   # Run any setup script to create template
+   ./git/setup.sh
+   # Edit the created config
+   nano ~/.config/private/dotfiles.conf
+   # Run setup again
+   ./git/setup.sh
+   ```
+
+2. **Zsh not loading properly:**
    ```bash
    # Check zsh installation
    which zsh
+   # Regenerate config from template
+   ./zsh/setup.sh
    # Reload configuration
    source ~/.zshrc
    ```
 
-2. **Neovim plugins not working:**
+3. **Neovim plugins not working:**
    ```bash
    # Check Neovim version
    nvim --version
@@ -221,25 +301,36 @@ antibody list  # or antigen list
    nvim +Lazy clean +Lazy sync +qa
    ```
 
-3. **Git aliases not working:**
+4. **Git aliases not working:**
    ```bash
+   # Regenerate git config
+   ./git/setup.sh
    # Check git configuration
    git config --list | grep alias
-   # Reload git configuration
-   git config --global include.path ~/.gitalias.txt
    ```
 
-4. **Tmux configuration not applied:**
+5. **Marksman LSP not working:**
    ```bash
-   # Reload tmux configuration
-   tmux source-file ~/.tmux.conf
+   # Check LSP status in nvim
+   :LspInfo
+   # Check mason installation
+   :Mason
    ```
 
 ### Getting Help
 
-1. Check the documentation in the `docs/` directory
-2. Run the setup scripts with debug mode: `DEBUG=1 ./scripts/setup-nvim.sh`
-3. Open an issue on the repository with details about your system and the problem
+1. Check `PRIVATE_CONFIG.md` for private configuration issues
+2. Check `CLAUDE.md` for Claude Code integration guidance
+3. Run setup scripts with debug mode: `DEBUG=1 ./git/setup.sh`
+4. Open an issue on the repository with details about your system and the problem
+
+## 🔐 Security Best Practices
+
+- **Never commit** `~/.config/private/dotfiles.conf`
+- **Always verify** `.gitignore` includes private files before pushing
+- **Review templates** before sharing your dotfiles publicly
+- **Use encryption** for additional security if needed
+- **Backup private configs** separately from the main repository
 
 ## 📄 License
 
@@ -249,9 +340,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Oh My Zsh](https://ohmyz.sh/) community
 - [Neovim](https://neovim.io/) developers
+- [LazyVim](https://github.com/LazyVim/LazyVim) framework
 - [Powerlevel10k](https://github.com/romkatv/powerlevel10k) theme
 - [GitAlias](https://gitalias.com/) project
 - [Tmux](https://github.com/tmux/tmux) developers
+- [Claude Code](https://claude.ai/code) integration
 
 ## 🤝 Contributing
 
@@ -259,9 +352,11 @@ While this is a personal dotfiles repository, suggestions and improvements are w
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
+3. Make your changes (ensure private config system compatibility)
 4. Submit a pull request
+
+**Note:** When contributing, please ensure any new configurations support the private config system by using templates and setup scripts.
 
 ---
 
-**Happy coding!** 🚀
+**Happy coding with secure, shareable dotfiles!** 🚀🔒
