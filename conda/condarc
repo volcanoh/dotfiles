@@ -1,0 +1,55 @@
+# Conda Configuration
+# This configuration provides sensible defaults for conda package management
+
+# Channel priority - conda-forge is a community-driven collection
+channels:
+  - conda-forge
+  - defaults
+
+# Channel priority strategy
+channel_priority: strict
+
+# Always yes to prompts
+always_yes: false
+
+# Show channel URLs when listing packages
+show_channel_urls: true
+
+# Auto-activate base environment
+auto_activate_base: true
+
+# Update conda automatically
+auto_update_conda: false
+
+# Create default packages for new environments
+create_default_packages:
+  - pip
+  - setuptools
+
+# SSL verification
+ssl_verify: true
+
+# Rollback on failure
+rollback_enabled: true
+
+# Use only tar.bz2 packages (faster)
+use_only_tar_bz2: false
+
+# Report errors automatically
+report_errors: true
+
+# Disable package verification (set to false for security)
+safety_checks: warn
+
+# Environment directories (default locations)
+envs_dirs:
+  - ~/miniconda3/envs
+  - ~/.conda/envs
+
+# Package cache directory
+pkgs_dirs:
+  - ~/miniconda3/pkgs
+  - ~/.conda/pkgs
+
+# Pip interoperability
+pip_interop_enabled: true

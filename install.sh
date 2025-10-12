@@ -18,6 +18,7 @@ INSTALL_GIT=false
 INSTALL_NVIM=false
 INSTALL_ZSH=false
 INSTALL_TMUX=false
+INSTALL_CONDA=false
 FORCE_INSTALL=false
 SKIP_DEPS=false
 
@@ -48,6 +49,7 @@ OPTIONS:
     -n, --nvim          Install Neovim configuration only
     -z, --zsh           Install Zsh configuration only
     -t, --tmux          Install Tmux configuration only
+    -c, --conda         Install Conda configuration only
     -f, --force         Force installation (overwrite existing configs)
     -s, --skip-deps     Skip dependency checking
     -h, --help          Show this help message
@@ -56,6 +58,7 @@ EXAMPLES:
     $0                  # Install all components (interactive)
     $0 --all            # Install all components
     $0 --nvim --zsh     # Install only Neovim and Zsh
+    $0 --conda --git    # Install only Conda and Git
     $0 --force --all    # Force install all components
 
 COMPONENTS:
@@ -63,6 +66,7 @@ COMPONENTS:
     Neovim  - Modern Lua-based configuration with LSP support
     Zsh     - Oh My Zsh + Antigen + Powerlevel10k theme
     Tmux    - Terminal multiplexer with custom theme
+    Conda   - Python package and environment management
 
 EOF
 }
@@ -91,6 +95,10 @@ parse_args() {
                 INSTALL_TMUX=true
                 shift
                 ;;
+            -c|--conda)
+                INSTALL_CONDA=true
+                shift
+                ;;
             -f|--force)
                 FORCE_INSTALL=true
                 shift
@@ -114,7 +122,7 @@ parse_args() {
     # If no specific component selected, default to all
     if [[ "$INSTALL_ALL" == "false" && "$INSTALL_GIT" == "false" && \
           "$INSTALL_NVIM" == "false" && "$INSTALL_ZSH" == "false" && \
-          "$INSTALL_TMUX" == "false" ]]; then
+          "$INSTALL_TMUX" == "false" && "$INSTALL_CONDA" == "false" ]]; then
         INSTALL_ALL=true
     fi
 }
@@ -151,6 +159,12 @@ interactive_selection() {
         read -p "Install Tmux configuration? (y/n): " -n 1 -r
         echo
         [[ $REPLY =~ ^[Yy]$ ]] && INSTALL_TMUX=true
+    fi
+
+    if [[ "$INSTALL_CONDA" == "false" ]]; then
+        read -p "Install Conda configuration? (y/n): " -n 1 -r
+        echo
+        [[ $REPLY =~ ^[Yy]$ ]] && INSTALL_CONDA=true
     fi
 }
 
@@ -218,6 +232,14 @@ install_components() {
         ((install_count++))
     fi
 
+    if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_CONDA" == "true" ]]; then
+        log_info "Installing Conda configuration..."
+        if "${SCRIPTS_DIR}/setup-conda.sh"; then
+            ((success_count++))
+        fi
+        ((install_count++))
+    fi
+
     # Installation summary
     echo
     log_info "Installation Summary:"
@@ -256,38 +278,51 @@ print_next_steps() {
 
     # Private configuration reminder
     echo -e "${BLUE}🔒 Configure Private Settings:${NC}"
-    if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_ZSH" == "true" ]] || [[ "$INSTALL_GIT" == "true" ]]; then
+    if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_ZSH" == "true" ]] || [[ "$INSTALL_GIT" == "true" ]] || [[ "$INSTALL_CONDA" == "true" ]]; then
         echo "1. Edit private config: vim ~/.config/private/dotfiles.conf"
         echo "   - Set your GIT_USER_NAME and GIT_USER_EMAIL"
         echo "   - Add API keys and tokens as needed"
         echo "2. Edit git config: vim ~/.config/private/git.conf"
         echo "   - Update user name and email"
+        if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_CONDA" == "true" ]]; then
+            echo "3. Edit conda config: vim ~/.config/private/conda.conf"
+            echo "   - Add custom channels and tokens"
+            echo "   - Configure environment defaults"
+        fi
         echo ""
     fi
 
     if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_ZSH" == "true" ]]; then
         echo -e "${BLUE}🐚 Zsh Setup:${NC}"
-        echo "3. Restart your terminal or run: exec zsh"
-        echo "4. Complete Powerlevel10k configuration: p10k configure"
+        echo "4. Restart your terminal or run: exec zsh"
+        echo "5. Complete Powerlevel10k configuration: p10k configure"
         echo ""
     fi
 
     if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_NVIM" == "true" ]]; then
         echo -e "${BLUE}⚡ Neovim Setup:${NC}"
-        echo "5. Open Neovim and let plugins install: nvim"
-        echo "6. Install language servers: :Mason"
+        echo "6. Open Neovim and let plugins install: nvim"
+        echo "7. Install language servers: :Mason"
         echo ""
     fi
 
     if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_TMUX" == "true" ]]; then
         echo -e "${BLUE}🖥️  Tmux Setup:${NC}"
-        echo "7. Install Tmux plugins: <prefix> + I (in tmux)"
+        echo "8. Install Tmux plugins: <prefix> + I (in tmux)"
+        echo ""
+    fi
+
+    if [[ "$INSTALL_ALL" == "true" ]] || [[ "$INSTALL_CONDA" == "true" ]]; then
+        echo -e "${BLUE}🐍 Conda Setup:${NC}"
+        echo "9. Restart your shell or run: exec \$SHELL"
+        echo "10. Verify conda setup: conda info"
+        echo "11. Create your first environment: conda create -n myproject python=3.11"
         echo ""
     fi
 
     echo -e "${BLUE}🎯 Final Steps:${NC}"
-    echo "8. Customize configurations in ~/.dotfiles/"
-    echo "9. Backup your private configs (they're not tracked by git)"
+    echo "12. Customize configurations in ~/.dotfiles/"
+    echo "13. Backup your private configs (they're not tracked by git)"
     echo
     echo -e "${CYAN}Enjoy your new development environment! 🚀${NC}"
 }
@@ -306,7 +341,7 @@ main() {
     # Interactive selection if needed (only if no specific components selected)
     if [[ "$INSTALL_ALL" == "false" && "$INSTALL_GIT" == "false" && \
           "$INSTALL_NVIM" == "false" && "$INSTALL_ZSH" == "false" && \
-          "$INSTALL_TMUX" == "false" ]]; then
+          "$INSTALL_TMUX" == "false" && "$INSTALL_CONDA" == "false" ]]; then
         interactive_selection
     fi
 

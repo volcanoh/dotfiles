@@ -9,6 +9,7 @@ This is a personal dotfiles repository for configuring development environments 
 - **Zsh**: Shell with Oh My Zsh framework and Powerlevel10k theme
 - **Tmux**: Terminal multiplexer for session management
 - **Git**: Version control with comprehensive alias collection
+- **Conda**: Python package and environment management system
 - **Spacemacs**: Emacs configuration framework
 
 ## Setup and Installation
@@ -24,6 +25,7 @@ Setup is handled through centralized scripts in the `scripts/` directory:
 ./scripts/setup-nvim.sh         # Neovim config and lazy.nvim setup
 ./scripts/setup-tmux.sh         # Tmux configuration and TPM
 ./scripts/setup-zsh.sh          # Zsh, Oh My Zsh, and private config
+./scripts/setup-conda.sh        # Conda installation and environment setup
 ```
 
 ### Setup Scripts Behavior
@@ -44,6 +46,12 @@ Setup is handled through centralized scripts in the `scripts/` directory:
   - Downloads Antigen plugin manager
   - Auto-creates `~/.config/private/dotfiles.conf` with template
   - Links zsh configuration files
+- **scripts/setup-conda.sh**:
+  - Automatically installs Miniconda if not present (Linux, macOS, Windows)
+  - Creates symlinks for `.condarc` configuration
+  - Initializes conda for both bash and zsh shells
+  - Auto-creates `~/.config/private/conda.conf` with template
+  - Optionally installs useful packages (mamba, jupyter)
 
 ## Neovim Architecture
 
@@ -120,6 +128,90 @@ The git configuration includes an extensive alias collection from GitAlias.com w
 Uses a local configuration setup with:
 - Main config: `tmux.conf`
 - Local overrides: `tmux.conf.local`
+
+## Conda Configuration
+
+### Automatic Installation
+The conda setup script can automatically install Miniconda on supported platforms:
+
+#### Supported Operating Systems
+- **Linux** (x86_64, aarch64): Downloads and installs Miniconda directly
+- **macOS** (x86_64, arm64): Installs via Homebrew if available, otherwise direct download
+- **Windows**: Provides guided installation instructions
+
+#### Installation Process
+```bash
+# The script will automatically detect your OS and architecture
+./scripts/setup-conda.sh
+
+# If conda is not found, it will prompt:
+# "Install Miniconda? (y/n):"
+```
+
+The installer:
+1. Detects your operating system and architecture
+2. Downloads the appropriate Miniconda installer
+3. Installs Miniconda to `~/miniconda3` (default location)
+4. Adds conda to your PATH for the current session
+5. Initializes conda for both bash and zsh shells
+6. Proceeds with configuration setup
+
+#### Prerequisites
+- **curl**: Required for downloading installers (automatically checked)
+- **Internet connection**: Needed to download Miniconda
+- **Disk space**: Approximately 400MB for base Miniconda installation
+
+#### Manual Installation
+If automatic installation fails or is not supported, install manually:
+```bash
+# Download from official website
+# https://docs.conda.io/en/latest/miniconda.html
+
+# After manual installation, run the setup script again
+./scripts/setup-conda.sh
+```
+
+### Environment Management
+The conda configuration provides efficient Python package and environment management:
+
+#### Configuration Features
+- **Channel Priority**: Uses conda-forge as primary channel for better package availability
+- **Environment Isolation**: Maintains separate environments for different projects
+- **Package Caching**: Optimized package cache for faster installations
+- **Shell Integration**: Automatic initialization for both bash and zsh shells
+- **Cross-Shell Compatibility**: Works seamlessly regardless of which shell you use
+
+#### Key Configuration Settings
+- **Auto-activation**: Configurable base environment activation
+- **Default Packages**: pip, setuptools included in new environments by default
+- **Security**: SSL verification and safety checks enabled
+- **Performance**: Optimized solver and package cache settings
+
+#### Useful Commands
+```bash
+# Environment management
+conda create -n myenv python=3.11    # Create new environment
+conda activate myenv                  # Activate environment
+conda deactivate                      # Deactivate current environment
+conda env list                       # List all environments
+
+# Package management
+conda install package-name           # Install package
+conda update package-name            # Update package
+conda remove package-name            # Remove package
+mamba install package-name           # Faster alternative with mamba
+
+# Environment export/import
+conda env export > environment.yml   # Export environment
+conda env create -f environment.yml  # Create from file
+```
+
+#### Private Configuration
+Custom settings in `~/.config/private/conda.conf`:
+- Additional channels for specialized packages
+- API tokens for private package repositories
+- Custom environment locations
+- Default packages for new environments
 
 ## Development Workflow
 
