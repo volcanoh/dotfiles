@@ -32,7 +32,7 @@ setopt GLOB_DOTS                 # Include dotfiles in globbing
 setopt NO_CASE_GLOB              # Case insensitive globbing
 
 # Other useful options
-setopt CORRECT                   # Command correction
+unsetopt CORRECT CORRECT_ALL     # Disable command correction
 setopt NO_BEEP                   # No beep on error
 setopt INTERACTIVE_COMMENTS      # Allow comments in interactive shell
 setopt LONG_LIST_JOBS            # List jobs in long format
