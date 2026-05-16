@@ -345,6 +345,10 @@ export GIT_USER_EMAIL="YOUR_EMAIL@example.com"
 # export MODEL_PROXY_TOKEN="your-api-token-here"
 # export OPENAI_API_KEY="sk-your-openai-key"
 # export GITHUB_TOKEN="ghp_your-github-token"
+# export TAVILY_API_KEY="your-tavily-api-key"
+# export EXA_API_KEY="your-exa-api-key"
+# export MINERU_ACCESS_KEY="your-mineru-access-key"
+# export MINERU_SECRET_KEY="your-mineru-secret-key"
 
 # Development Environment
 # export NODE_ENV="development"

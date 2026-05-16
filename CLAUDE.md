@@ -226,6 +226,7 @@ The extensive git alias system supports:
 - Code review with tools like `whois`, `whatis`, `who`
 - Repository maintenance with optimization commands
 - Integration with GitHub via Octo plugin in Neovim
+- Before every commit, inspect staged and unstaged changes for accidental leaks of personal secrets such as `TOKEN`, `KEY`, API keys, passwords, private config, or credentials, and stop the commit if anything sensitive is present.
 
 ### Common Development Commands
 

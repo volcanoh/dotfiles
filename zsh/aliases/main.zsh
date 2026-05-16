@@ -183,4 +183,4 @@ alias j='jobs'
 alias path='echo $PATH | tr ":" "\n"'
 alias reload='source ~/.zshrc'
 
-alias claude="ccr code"
+# alias claude="ccr code"

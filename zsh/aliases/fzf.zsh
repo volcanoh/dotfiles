@@ -3,12 +3,12 @@
 
 # File operations
 alias ff='fzf --preview "$FZF_PREVIEW_COMMAND"'                    # Basic file finder with preview
-alias fe='vim $(fzf --preview "$FZF_PREVIEW_COMMAND")'            # Find and edit file
-alias fo='open $(fzf --preview "$FZF_PREVIEW_COMMAND")'           # Find and open file (macOS)
+alias fe='vim "$(fzf --preview "$FZF_PREVIEW_COMMAND")"'          # Find and edit file
+alias fo='open "$(fzf --preview "$FZF_PREVIEW_COMMAND")"'         # Find and open file (macOS)
 
 # Directory operations
-alias fd='cd $(find . -type d | fzf --preview "ls -la {}")'       # Find and change directory
-alias fcd='cd $(find . -type d | fzf --preview "ls -la {}")'      # Alternative name
+alias fd='cd "$(find . -type d | fzf --preview "ls -la {}")"'     # Find and change directory
+alias fcd='cd "$(find . -type d | fzf --preview "ls -la {}")"'    # Alternative name
 
 # Git operations
 alias gco='git checkout $(git branch -a | fzf | sed "s/remotes\/origin\///" | sed "s/^\* //" | xargs)'  # Git checkout branch

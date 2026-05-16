@@ -50,16 +50,9 @@ ENABLE_CORRECTION="false"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="false"
 
-# Oh My Zsh plugins (core functionality only - enhanced plugins loaded via Antigen)
+# Oh My Zsh plugins (minimal set for faster startup)
 plugins=(
     git
-    docker
-    kubectl
-    npm
-    node
-    python
-    pip
-    tmux
     web-search
     copypath
     copyfile
@@ -157,18 +150,8 @@ done
 #     unset fzf_completion fzf_key_bindings
 # fi
 #
-# NVM setup (Node Version Manager)
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-# Pyenv setup (Python Version Manager)
-if command -v pyenv >/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-fi
-
-# RVM setup (Ruby Version Manager)
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+# Version managers are now lazy-loaded via lazy-load.zsh for faster startup
+# They will be initialized only when first used
 
 # Local customizations (not tracked in git)
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
@@ -193,3 +176,9 @@ unset config_file alias_file func_file
 
 # Private configuration is loaded at startup (lines 22-31)
 # Add new variables to ~/.config/private/dotfiles.conf with export statements
+
+. "$HOME/.local/share/../bin/env"
+
+# OpenClaw Completion
+source "/Users/huangcan/.openclaw/completions/openclaw.zsh"
+# Load OpenClaw-related API keys from ~/.config/private/dotfiles.conf
