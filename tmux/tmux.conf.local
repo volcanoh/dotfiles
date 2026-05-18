@@ -276,7 +276,7 @@ tmux_conf_copy_to_os_clipboard=false
 
 # Use OSC 52 so copying in remote Linux tmux sessions can reach the local
 # terminal clipboard over SSH.
-set -g set-clipboard external
+set -g set-clipboard on
 set -as terminal-features ',xterm*:clipboard,screen*:clipboard,tmux*:clipboard,alacritty*:clipboard,wezterm*:clipboard,kitty*:clipboard'
 bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'tmux load-buffer -w -'
 
