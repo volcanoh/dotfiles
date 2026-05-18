@@ -180,5 +180,7 @@ unset config_file alias_file func_file
 . "$HOME/.local/share/../bin/env"
 
 # OpenClaw Completion
-source "/Users/huangcan/.openclaw/completions/openclaw.zsh"
+if [[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]]; then
+    source "$HOME/.openclaw/completions/openclaw.zsh"
+fi
 # Load OpenClaw-related API keys from ~/.config/private/dotfiles.conf
