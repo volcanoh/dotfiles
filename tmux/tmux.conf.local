@@ -272,7 +272,13 @@ tmux_conf_theme_clock_style='24'
 #   - false (default)
 # on macOS, this requires installing reattach-to-user-namespace, see README.md
 # on Linux, this requires xsel or xclip
-tmux_conf_copy_to_os_clipboard=true
+tmux_conf_copy_to_os_clipboard=false
+
+# Use OSC 52 so copying in remote Linux tmux sessions can reach the local
+# terminal clipboard over SSH.
+set -g set-clipboard external
+set -as terminal-features ',xterm*:clipboard,screen*:clipboard,tmux*:clipboard,alacritty*:clipboard,wezterm*:clipboard,kitty*:clipboard'
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'tmux load-buffer -w -'
 
 bind-key -T copy-mode-vi Y send-keys -X copy-pipe 'yank > #{pane_tty}'
 
@@ -305,3 +311,28 @@ bind - split-window -v
 bind \\ split-window -h
 set -s escape-time 10                     # faster command sequences
 set -sg repeat-time 10                   # increase repeat timeout
+
+# -- plugins -------------------------------------------------------------------
+
+set -g @extrakto_clip_mode 'tmux_osc52'
+set -g @extrakto_clip_mode_order 'tmux_osc52 buffer'
+
+# Keep <prefix> F and <prefix> Tab as full plugin entry points, and make the
+# common session/window selectors direct replacements for tmux choose-tree.
+unbind-key -q g
+unbind-key -q -T fzf-nav s
+unbind-key -q -T fzf-nav w
+unbind-key -q -T fzf-nav p
+bind-key s run-shell -b "$HOME/.tmux/plugins/tmux-fzf/scripts/session.sh switch"
+bind-key w run-shell -b "$HOME/.tmux/plugins/tmux-fzf/scripts/window.sh switch"
+
+bind-key X display-message 'extrakto: p=path u=url l=line w=word a=all' \; switch-client -T extrakto-pick
+bind-key -T extrakto-pick p run-shell "$HOME/.tmux/plugins/extrakto/scripts/open.sh \"#{pane_id}\" path"
+bind-key -T extrakto-pick u run-shell "$HOME/.tmux/plugins/extrakto/scripts/open.sh \"#{pane_id}\" url"
+bind-key -T extrakto-pick l run-shell "$HOME/.tmux/plugins/extrakto/scripts/open.sh \"#{pane_id}\" line"
+bind-key -T extrakto-pick w run-shell "$HOME/.tmux/plugins/extrakto/scripts/open.sh \"#{pane_id}\" word"
+bind-key -T extrakto-pick a run-shell "$HOME/.tmux/plugins/extrakto/scripts/open.sh \"#{pane_id}\" all"
+
+set -g @plugin 'sainnhe/tmux-fzf'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'laktak/extrakto'
